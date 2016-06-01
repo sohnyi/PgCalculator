@@ -1,0 +1,52 @@
+<resources>
+    <string name="app_name">"程序员计算器"</string>
+
+    <string name="button_toHEX">HEX</string>
+    <string name="button_toDEC">DEC</string>
+    <string name="button_toOCT">OTC</string>
+    <string name="button_toBIN">BIN</string>
+
+    <string name="button_lsh">LSH</string>
+    <string name="button_rsh">RSH</string>
+    <string name="button_or">OR</string>
+    <string name="button_xor">XOR</string>
+    <string name="button_not">NOT</string>
+    <string name="button_and">AND</string>
+    <string name="button_mod">MOD</string>
+
+    <string name="button_back">⌫</string>
+    <string name="button_clean">C</string>
+    <string name="button_add">+</string>
+    <string name="button_sub">-</string>
+    <string name="button_mul">×</string>
+    <!--<string name="button_div">/</string>-->
+    <string name="button_div">÷</string>
+    <string name="button_equ">＝</string>
+    <string name="button_copy">COP</string>
+
+    <string name="button_0">0</string>
+    <string name="button_1">1</string>
+    <string name="button_2">2</string>
+    <string name="button_3">3</string>
+    <string name="button_4">4</string>
+    <string name="button_5">5</string>
+    <string name="button_6">6</string>
+    <string name="button_7">7</string>
+    <string name="button_8">8</string>
+    <string name="button_9">9</string>
+    <string name="button_A">A</string>
+    <string name="button_B">B</string>
+    <string name="button_C">C</string>
+    <string name="button_D">D</string>
+    <string name="button_E">E</string>
+    <string name="button_F">F</string>
+
+    <string name="button_brt_l">(</string>
+    <string name="button_brt_r">)</string>
+    <string name="button_sign">±</string>
+    <string name="button_dot">.</string>
+
+    <string name="unableInput">"输入字符长度已达最大值"</string>
+    <string name="copy">结果已复制到剪贴板</string>
+    <string name="cop">cop</string>
+</resources>
