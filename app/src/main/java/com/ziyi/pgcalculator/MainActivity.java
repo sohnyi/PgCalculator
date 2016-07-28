@@ -1,5 +1,8 @@
 package com.ziyi.pgcalculator;
 
+import android.content.ClipData;
+import android.content.ClipboardManager;
+import android.content.Context;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -8,7 +11,6 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 import java.lang.String;
-import android.widget.Toast;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -104,13 +106,19 @@ public class MainActivity extends AppCompatActivity {
         });
 
 //        结果复制到剪贴板
-        // TODO: 2016/5/24  add copy function
         mButton_copy = (Button) findViewById(R.id.button_copy);
         mButton_copy.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Toast.makeText(MainActivity.this, R.string.copy,
-                        Toast.LENGTH_SHORT).show();
+                if (!mTextView_output.getText().toString().equals("")) {
+                    ClipboardManager cm = (ClipboardManager) getSystemService(Context.CLIPBOARD_SERVICE);
+                    ClipData clipData;
+                    clipData = ClipData.newPlainText("text", mTextView_output.getText().toString());
+                    cm.setPrimaryClip(clipData);
+                    Util.showToast(MainActivity.this, R.string.copy);
+                } else {
+                    Util.showToast(MainActivity.this, "请先得到一个计算结果");
+                }
             }
         });
 
@@ -119,6 +127,7 @@ public class MainActivity extends AppCompatActivity {
         mButton_equ.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                Log.e("pgct", "equ click");
                 if (!mTextView_output.getText().toString().equals("")) {
                     mEditText_input.setText(mTextView_output.getText());
                     mTextView_output.setText("");
@@ -174,6 +183,7 @@ public class MainActivity extends AppCompatActivity {
         return secondOperand.toString();
     }
 
+    /*得到计算结果*/
     public String getOutput() {
         long first, second, result;
 
@@ -244,6 +254,7 @@ public class MainActivity extends AppCompatActivity {
         return mString_output;
     }
 
+    /*设置数字按钮监听*/
     public void setButtonNumbersListener() {
         Log.e("pgct", "NumbersListener");
         for (int i = 0; i < mButtonOperands_id.length; i++) {
@@ -252,8 +263,7 @@ public class MainActivity extends AppCompatActivity {
                 @Override
                 public void onClick(View v) {
                     if (firstOperand.length() > 16 || secondOperand.length() > 16)
-                        Toast.makeText(MainActivity.this, R.string.unableInput,
-                                Toast.LENGTH_SHORT).show();
+                        Util.showToast(MainActivity.this, R.string.unableInput);
                     else {
                         if (mEditText_input.length() >= 26)
                             mEditText_input.setTextSize(10);
@@ -284,6 +294,7 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
+    /*设置操作符监听*/
     public void setButtonOperatorsListener() {
         Log.e("pgct", "OperatorsListener");
         for (int i = 0; i < mButtonUnaryOperators_id.length; i++) {
@@ -323,8 +334,7 @@ public class MainActivity extends AppCompatActivity {
                         firstOperand = new StringBuffer(mString_output);
                     }
                     else
-                        Toast.makeText(MainActivity.this, R.string.unableInput,
-                                Toast.LENGTH_SHORT).show();
+                        Util.showToast(MainActivity.this, R.string.unableInput);
                 }
 
             });
@@ -378,7 +388,6 @@ public class MainActivity extends AppCompatActivity {
     }
 
 
-    // TODO: 2016/5/24 add Hexadecimal conversion and changed effect
 
     /*进制转换*/
 
