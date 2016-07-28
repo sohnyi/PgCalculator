@@ -32,6 +32,7 @@
             android:maxLines="1"
             android:maxLength="64"/>
 
+
     </LinearLayout>
 
 
@@ -45,15 +46,19 @@
         android:maxLines="1"/>
 
 
-    <TableLayout
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:orientation="horizontal"
+        android:orientation="vertical"
         android:layout_weight="3"
         android:padding="0dp"
         android:layout_margin="0dp">
 
-        <TableRow>
+        <LinearLayout
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:layout_width="match_parent"
+            android:orientation="horizontal">
 
             <Button
                 android:id="@+id/button_toHEX"
@@ -62,7 +67,7 @@
                 android:layout_weight="3"
                 android:text="@string/button_toHEX"
                 android:layout_margin="0dp"
-                android:background="@android:color/transparent"/>
+                android:background="@drawable/button_style"/>
 
             <Button
                 android:id="@+id/button_lsh"
@@ -71,7 +76,7 @@
                 android:layout_weight="1"
                 android:text="@string/button_lsh"
                 android:layout_margin="0dp"
-                android:background="@android:color/transparent"/>
+                android:background="@drawable/button_style"/>
 
             <Button
                 android:id="@+id/button_rsh"
@@ -80,7 +85,7 @@
                 android:layout_weight="1"
                 android:text="@string/button_rsh"
                 android:layout_margin="0dp"
-                android:background="@android:color/transparent"/>
+                android:background="@drawable/button_style"/>
 
             <Button
                 android:id="@+id/button_not"
@@ -89,18 +94,22 @@
                 android:layout_weight="1"
                 android:text="@string/button_not"
                 android:layout_margin="0dp"
-                android:background="@android:color/transparent"/>
+                android:background="@drawable/button_style"/>
 
-        </TableRow>
+        </LinearLayout>
 
-        <TableRow>
+        <LinearLayout
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:layout_width="match_parent"
+            android:orientation="horizontal">
             <Button
                 android:id="@+id/button_toDEC"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="3"
                 android:text="@string/button_toDEC"
-                android:background="@android:color/transparent"/>
+                android:background="@drawable/button_style"/>
 
             <Button
                 android:id="@+id/button_or"
@@ -108,7 +117,7 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:text="@string/button_or"
-                android:background="@android:color/transparent"/>
+                android:background="@drawable/button_style"/>
 
             <Button
                 android:id="@+id/button_xor"
@@ -116,7 +125,7 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:text="@string/button_xor"
-                android:background="@android:color/transparent"/>
+                android:background="@drawable/button_style"/>
 
             <Button
                 android:id="@+id/button_and"
@@ -124,10 +133,14 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:text="@string/button_and"
-                android:background="@android:color/transparent"/>
-        </TableRow>
+                android:background="@drawable/button_style"/>
+        </LinearLayout>
 
-        <TableRow>
+        <LinearLayout
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:layout_width="match_parent"
+            android:orientation="horizontal">
 
             <Button
                 android:id="@+id/button_toOCT"
@@ -135,7 +148,7 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="3"
                 android:text="@string/button_toOCT"
-                android:background="@android:color/transparent"/>
+                android:background="@drawable/button_style"/>
 
             <Button
                 android:id="@+id/button_mod"
@@ -143,7 +156,7 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:text="@string/button_mod"
-                android:background="@android:color/transparent"/>
+                android:background="@drawable/button_style"/>
 
             <Button
                 android:id="@+id/button_copy"
@@ -151,7 +164,7 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:text="@string/button_copy"
-                android:background="@android:color/transparent"/>
+                android:background="@drawable/button_style"/>
 
             <Button
                 android:id="@+id/button_clean"
@@ -159,26 +172,30 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:text="@string/button_clean"
-                android:background="@android:color/transparent"/>
+                android:background="@drawable/button_style"/>
 
 
-        </TableRow>
+        </LinearLayout>
 
-        <TableRow>
+        <LinearLayout
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:layout_width="match_parent"
+            android:orientation="horizontal">
             <Button
                 android:id="@+id/button_toBIN"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="3"
                 android:text="@string/button_toBIN"
-                android:background="@android:color/transparent"/>
+                android:background="@drawable/button_style"/>
             <Button
                 android:id="@+id/button_back"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="2"
                 android:text="@string/button_back"
-                android:background="@android:color/transparent"/>
+                android:background="@drawable/button_style"/>
 
 
             <Button
@@ -187,28 +204,32 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:text="@string/button_add"
-                android:background="@android:color/transparent"/>
+                android:background="@drawable/button_style"/>
 
-        </TableRow>
+        </LinearLayout>>
 
-    </TableLayout>
+    </LinearLayout>
 
-    <TableLayout
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_weight="3"
-        android:orientation="horizontal"
+        android:orientation="vertical"
         android:padding="0dp"
-        android:background="@android:color/transparent">
+        android:background="@drawable/button_style">
 
-        <TableRow>
+        <LinearLayout
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:layout_width="match_parent"
+            android:orientation="horizontal">
             <Button
                 android:id="@+id/button_a"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:text="@string/button_A"
-                android:background="@android:color/transparent"/>
+                android:background="@drawable/button_style"/>
 
             <Button
                 android:id="@+id/button_b"
@@ -216,7 +237,9 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:text="@string/button_B"
-                android:background="@android:color/transparent"/>
+                android:background="@drawable/button_style"/>
+
+
 
             <Button
                 android:id="@+id/button_7"
@@ -224,7 +247,7 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:text="@string/button_7"
-                android:background="@android:color/transparent"/>
+                android:background="@drawable/button_style"/>
 
             <Button
                 android:id="@+id/button_8"
@@ -232,7 +255,7 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:text="@string/button_8"
-                android:background="@android:color/transparent"/>
+                android:background="@drawable/button_style"/>
 
             <Button
                 android:id="@+id/button_9"
@@ -240,7 +263,7 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:text="@string/button_9"
-                android:background="@android:color/transparent"/>
+                android:background="@drawable/button_style"/>
 
             <Button
                 android:id="@+id/button_sub"
@@ -248,17 +271,21 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:text="@string/button_sub"
-                android:background="@android:color/transparent"/>
-        </TableRow>
+                android:background="@drawable/button_style"/>
+        </LinearLayout>>
 
-        <TableRow>
+        <LinearLayout
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:layout_width="match_parent"
+            android:orientation="horizontal">
             <Button
                 android:id="@+id/button_c"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:text="@string/button_C"
-                android:background="@android:color/transparent"/>
+                android:background="@drawable/button_style"/>
 
             <Button
                 android:id="@+id/button_d"
@@ -266,7 +293,7 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:text="@string/button_D"
-                android:background="@android:color/transparent"/>
+                android:background="@drawable/button_style"/>
 
             <Button
                 android:id="@+id/button_4"
@@ -274,7 +301,7 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:text="@string/button_4"
-                android:background="@android:color/transparent"/>
+                android:background="@drawable/button_style"/>
 
             <Button
                 android:id="@+id/button_5"
@@ -282,7 +309,7 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:text="@string/button_5"
-                android:background="@android:color/transparent"/>
+                android:background="@drawable/button_style"/>
 
             <Button
                 android:id="@+id/button_6"
@@ -290,7 +317,7 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:text="@string/button_6"
-                android:background="@android:color/transparent"/>
+                android:background="@drawable/button_style"/>
 
             <Button
                 android:id="@+id/button_mul"
@@ -298,17 +325,21 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:text="@string/button_mul"
-                android:background="@android:color/transparent"/>
-        </TableRow>
+                android:background="@drawable/button_style"/>
+        </LinearLayout>
 
-        <TableRow>
+        <LinearLayout
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:layout_width="match_parent"
+            android:orientation="horizontal">
             <Button
                 android:id="@+id/button_e"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:text="@string/button_E"
-                android:background="@android:color/transparent"/>
+                android:background="@drawable/button_style"/>
 
             <Button
                 android:id="@+id/button_f"
@@ -316,7 +347,7 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:text="@string/button_F"
-                android:background="@android:color/transparent"/>
+                android:background="@drawable/button_style"/>
 
             <Button
                 android:id="@+id/button_1"
@@ -324,7 +355,7 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:text="@string/button_1"
-                android:background="@android:color/transparent"/>
+                android:background="@drawable/button_style"/>
 
             <Button
                 android:id="@+id/button_2"
@@ -332,7 +363,7 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:text="@string/button_2"
-                android:background="@android:color/transparent"/>
+                android:background="@drawable/button_style"/>
 
             <Button
                 android:id="@+id/button_3"
@@ -340,7 +371,7 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:text="@string/button_3"
-                android:background="@android:color/transparent"/>
+                android:background="@drawable/button_style"/>
 
             <Button
                 android:id="@+id/button_div"
@@ -348,17 +379,21 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:text="@string/button_div"
-                android:background="@android:color/transparent"/>
-        </TableRow>
+                android:background="@drawable/button_style"/>
+        </LinearLayout>
 
-        <TableRow>
+        <LinearLayout
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:layout_width="match_parent"
+            android:orientation="horizontal">
             <Button
                 android:id="@+id/button_brt_l"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:text="@string/button_brt_l"
-                android:background="@android:color/transparent"/>
+                android:background="@drawable/button_style"/>
 
             <Button
                 android:id="@+id/button_brt_r"
@@ -366,7 +401,7 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:text="@string/button_brt_r"
-                android:background="@android:color/transparent"/>
+                android:background="@drawable/button_style"/>
 
             <Button
                 android:id="@+id/button_sign"
@@ -374,7 +409,7 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:text="@string/button_sign"
-                android:background="@android:color/transparent"/>
+                android:background="@drawable/button_style"/>
 
             <Button
                 android:id="@+id/button_0"
@@ -382,7 +417,7 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:text="@string/button_0"
-                android:background="@android:color/transparent"/>
+                android:background="@drawable/button_style"/>
 
             <Button
                 android:id="@+id/button_equ"
@@ -390,9 +425,9 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="2"
                 android:text="@string/button_equ"
-                android:background="@android:color/transparent"/>
-        </TableRow>
+                android:background="@drawable/button_style"/>
+        </LinearLayout>
 
-    </TableLayout>
+    </LinearLayout>
 
 </LinearLayout>

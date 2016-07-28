@@ -138,14 +138,14 @@ public class MainActivity extends AppCompatActivity {
                     mEditText_input.setText(firstOperand + operator + secondOperand);
                     if (secondOperand.length() > 0) {
                         mTextView_output.setText(getOutput());
+                    } else if (secondOperand.length() == 0) {
+                        mTextView_output.setText("");
                     }
-                }
-                else if (operator.length() > 0) {
+                } else if (operator.length() > 0) {
                     operator = "";
                     mTextView_output.setText("");
                     mEditText_input.setText(firstOperand);
-                }
-                else if (firstOperand.length() > 0) {
+                } else if (firstOperand.length() > 0) {
                     firstOperand.deleteCharAt(firstOperand.length() - 1);
                     mEditText_input.setText(firstOperand);
                     Log.e("pgct(bk)", "firstOperand:" + firstOperand);
