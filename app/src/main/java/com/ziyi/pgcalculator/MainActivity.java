@@ -9,6 +9,7 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.TextView;
 import java.lang.String;
 
@@ -40,9 +41,9 @@ public class MainActivity extends AppCompatActivity {
     private int[] mButtonBinaryOperators_id = {R.id.button_add, R.id.button_sub, R.id.button_mul,
             R.id.button_div, R.id.button_or, R.id.button_xor, R.id.button_and, R.id.button_mod};
 
-    private Button mButton_clean;
-    private Button mButton_copy;
-    private Button mButton_back;
+    private ImageButton mButton_clean;
+    private ImageButton mButton_copy;
+    private ImageButton mButton_back;
     private Button mButton_equ;
 
 
@@ -54,7 +55,7 @@ public class MainActivity extends AppCompatActivity {
         mEditText_input = (EditText) findViewById(R.id.editText_input);
         mTextView_output = (TextView) findViewById(R.id.textView_output);
 
-        mButton_clean = (Button)findViewById(R.id.button_clean);
+        mButton_clean = (ImageButton)findViewById(R.id.button_clean);
 
         changeToDEC();
 
@@ -106,7 +107,7 @@ public class MainActivity extends AppCompatActivity {
         });
 
 //        结果复制到剪贴板
-        mButton_copy = (Button) findViewById(R.id.button_copy);
+        mButton_copy = (ImageButton) findViewById(R.id.button_copy);
         mButton_copy.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -137,7 +138,7 @@ public class MainActivity extends AppCompatActivity {
         });
 
 //        退格
-        mButton_back = (Button) findViewById(R.id.button_back);
+        mButton_back = (ImageButton) findViewById(R.id.button_back);
         mButton_back.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
