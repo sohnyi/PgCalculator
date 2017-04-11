@@ -53,6 +53,7 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
         mEditText_input = (EditText) findViewById(R.id.editText_input);
+        mEditText_input.setKeyListener(null);
         mTextView_output = (TextView) findViewById(R.id.textView_output);
 
         mButton_clean = (ImageButton)findViewById(R.id.button_clean);
