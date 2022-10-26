@@ -1,559 +1,436 @@
-package com.ziyi.pgcalculator;
+package com.ziyi.pgcalculator
 
-import android.content.ClipData;
-import android.content.ClipboardManager;
-import android.content.Context;
-import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
-import android.util.Log;
-import android.view.View;
-import android.widget.Button;
-import android.widget.EditText;
-import android.widget.ImageButton;
-import android.widget.TextView;
-import java.lang.String;
+import androidx.appcompat.app.AppCompatActivity
+import android.os.Bundle
+import android.content.ClipData
+import android.content.ClipboardManager
+import android.util.Log
+import android.view.View
+import android.widget.Button
+import com.ziyi.pgcalculator.databinding.ActivityMainBinding
 
-public class MainActivity extends AppCompatActivity {
+class MainActivity : AppCompatActivity() {
 
-    private StringBuffer firstOperand = new StringBuffer();
-    private StringBuffer secondOperand = new StringBuffer();
-/*
+    private val mBinding by lazy {
+        ActivityMainBinding.inflate(layoutInflater)
+    }
+
+    private var firstOperand = StringBuffer()
+    private var secondOperand = StringBuffer()
+
+    /*
     private char operatorType;
 */
-    private String operator = "";
-    private char state;
+    private var operator = ""
+    private var state = 0.toChar()
+    private var mOutputStr = ""
+    private var mScale = 10
+    private val mButtonOperandIds = intArrayOf(
+        R.id.button_0, R.id.button_1, R.id.button_2, R.id.button_3,
+        R.id.button_4, R.id.button_5, R.id.button_6, R.id.button_7,
+        R.id.button_8, R.id.button_9, R.id.button_a, R.id.button_b,
+        R.id.button_c, R.id.button_d, R.id.button_e, R.id.button_f
+    )
+    private val mButtonUnaryOperatorIds =
+        intArrayOf(R.id.button_lsh, R.id.button_rsh, R.id.button_not, R.id.button_equ)
+    private val mButtonBinaryOperatorIds = intArrayOf(
+        R.id.button_add, R.id.button_sub, R.id.button_mul,
+        R.id.button_div, R.id.button_or, R.id.button_xor, R.id.button_and, R.id.button_mod
+    )
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        setContentView(mBinding.root)
 
-    private String mString_output = "";
-
-    private int mScale = 10;
-
-    private TextView mTextView_scale;
-    private EditText mEditText_input;
-    private TextView mTextView_output;
-
-    private int[] mButtonOperands_id = {R.id.button_0, R.id.button_1, R.id.button_2,R.id.button_3,
-            R.id.button_4, R.id.button_5, R.id.button_6,R.id.button_7,
-            R.id.button_8, R.id.button_9, R.id.button_a,R.id.button_b,
-            R.id.button_c, R.id.button_d, R.id.button_e,R.id.button_f,};
-    
-    private  int[] mButtonUnaryOperators_id = {R.id.button_lsh, R.id.button_rsh, R.id.button_not, R.id.button_equ};
-
-    private int[] mButtonBinaryOperators_id = {R.id.button_add, R.id.button_sub, R.id.button_mul,
-            R.id.button_div, R.id.button_or, R.id.button_xor, R.id.button_and, R.id.button_mod};
-
-    private ImageButton mButton_clean;
-    private ImageButton mButton_copy;
-    private ImageButton mButton_back;
-    private Button mButton_equ;
+        mBinding.editTextInput.keyListener = null
 
 
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
-
-        mEditText_input = (EditText) findViewById(R.id.editText_input);
-        mEditText_input.setKeyListener(null);
-        mTextView_output = (TextView) findViewById(R.id.textView_output);
-
-        mButton_clean = (ImageButton)findViewById(R.id.button_clean);
-
-        changeToDEC();
-
-        Button mButton_toHEX = (Button) findViewById(R.id.button_toHEX);
-        mButton_toHEX.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                changeToHEX();
-            }
-        });
-
-        Button mButton_toDEC = (Button) findViewById(R.id.button_toDEC);
-        mButton_toDEC.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                changeToDEC();
-            }
-        });
-
-        Button mButton_toOCT = (Button) findViewById(R.id.button_toOCT);
-        mButton_toOCT.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                changeToOCT();
-            }
-        });
-
-        Button mButton_toBIN = (Button) findViewById(R.id.button_toBIN);
-        mButton_toBIN.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                changeToBIN();
-            }
-        });
+        changeToDEC()
+        mBinding.buttonToHEX.setOnClickListener { changeToHEX() }
+        mBinding.buttonToDEC.setOnClickListener { changeToDEC() }
+        mBinding.buttonToOCT.setOnClickListener { changeToOCT() }
+        mBinding.buttonToBIN.setOnClickListener { changeToBIN() }
 
 //        归零
-        mButton_clean.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                mEditText_input.setText("");
-                mEditText_input.setTextSize(40);
-                firstOperand = new StringBuffer();
-                secondOperand = new StringBuffer();
-                mTextView_output.setText("");
-                mString_output = "";
-                state = 'i';
-                operator = "";
-            }
-        });
+        mBinding.buttonClean.setOnClickListener {
+            mBinding.editTextInput.setText("")
+            mBinding.editTextInput.textSize = 40f
+            firstOperand = StringBuffer()
+            secondOperand = StringBuffer()
+            mBinding.textViewOutput.text = ""
+            mOutputStr = ""
+            state = 'i'
+            operator = ""
+        }
 
 //        结果复制到剪贴板
-        mButton_copy = (ImageButton) findViewById(R.id.button_copy);
-        mButton_copy.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (!mTextView_output.getText().toString().equals("")) {
-                    ClipboardManager cm = (ClipboardManager) getSystemService(Context.CLIPBOARD_SERVICE);
-                    ClipData clipData;
-                    clipData = ClipData.newPlainText("text", mTextView_output.getText().toString());
-                    cm.setPrimaryClip(clipData);
-                    Util.showToast(MainActivity.this, R.string.copy);
-                } else {
-                    Util.showToast(MainActivity.this, "请先得到一个计算结果");
-                }
+        mBinding.buttonCopy.setOnClickListener {
+            if (mBinding.textViewOutput.text.toString() != "") {
+                val cm = getSystemService(CLIPBOARD_SERVICE) as ClipboardManager
+                val clipData: ClipData = ClipData.newPlainText("text", mBinding.textViewOutput.text.toString())
+                cm.setPrimaryClip(clipData)
+                Util.showToast(this@MainActivity, R.string.copy)
+            } else {
+                Util.showToast(this@MainActivity, "请先得到一个计算结果")
             }
-        });
+        }
 
 //        "="按钮方法
-        mButton_equ = (Button) findViewById(R.id.button_equ);
-        mButton_equ.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Log.e("pgct", "equ click");
-                if (!mTextView_output.getText().toString().equals("")) {
-                    mEditText_input.setText(mTextView_output.getText());
-                    mTextView_output.setText("");
-                    Log.e("pgct", "output to input");
-                }
+        mBinding.buttonEqu.setOnClickListener {
+            Log.e("pgct", "equ click")
+            if (mBinding.textViewOutput.text.toString() != "") {
+                mBinding.editTextInput.setText(mBinding.textViewOutput.text)
+                mBinding.textViewOutput.text = ""
+                Log.e("pgct", "output to input")
             }
-        });
+        }
 
 //        退格
-        mButton_back = (ImageButton) findViewById(R.id.button_back);
-        mButton_back.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Log.e("pgct(bk)", "button_back click");
-                if (secondOperand.length() > 0) {
-                    secondOperand.deleteCharAt(secondOperand.length() - 1);
-                    mEditText_input.setText(firstOperand + operator + secondOperand);
-                    if (secondOperand.length() > 0) {
-                        mTextView_output.setText(getOutput());
-                    } else if (secondOperand.length() == 0) {
-                        mTextView_output.setText("");
-                    }
-                } else if (operator.length() > 0) {
-                    operator = "";
-                    mTextView_output.setText("");
-                    mEditText_input.setText(firstOperand);
-                } else if (firstOperand.length() > 0) {
-                    firstOperand.deleteCharAt(firstOperand.length() - 1);
-                    mEditText_input.setText(firstOperand);
-                    Log.e("pgct(bk)", "firstOperand:" + firstOperand);
+        mBinding.buttonBack.setOnClickListener {
+            Log.e("pgct(bk)", "button_back click")
+            if (secondOperand.isNotEmpty()) {
+                secondOperand.deleteCharAt(secondOperand.length - 1)
+                mBinding.editTextInput.setText(firstOperand.toString() + operator + secondOperand)
+                if (secondOperand.isNotEmpty()) {
+                    mBinding.textViewOutput.text = output
+                } else if (secondOperand.isEmpty()) {
+                    mBinding.textViewOutput.text = ""
                 }
+            } else if (operator.isNotEmpty()) {
+                operator = ""
+                mBinding.textViewOutput.text = ""
+                mBinding.editTextInput.setText(firstOperand)
+            } else if (firstOperand.isNotEmpty()) {
+                firstOperand.deleteCharAt(firstOperand.length - 1)
+                mBinding.editTextInput.setText(firstOperand)
+                Log.e("pgct(bk)", "firstOperand:$firstOperand")
             }
-        });
+        }
 
 //        初始状态，监听数字按键
-        state = 'i';
-        setButtonNumbersListener();
+        state = 'i'
+        setButtonNumbersListener()
     }
 
-
-//   计算器具体功能实现
-
-
-    public String getFirstOperand() {
-        return firstOperand.toString();
+    //   计算器具体功能实现
+    fun getFirstOperand(): String {
+        return firstOperand.toString()
     }
 
-    public String getOperator() {
-        return operator;
-    }
-
-    public String getSecondOperand() {
-        return secondOperand.toString();
+    fun getSecondOperand(): String {
+        return secondOperand.toString()
     }
 
     /*得到计算结果*/
-    public String getOutput() {
-        long first, second, result;
-
-        Log.e("pgct(op)", "mScale:" + mScale);
-        Log.e("pgct(op)", "firstOperand:" + firstOperand);
-        first = Long.parseLong(firstOperand.toString(), mScale);
-        second = Long.parseLong(secondOperand.toString(), mScale);
-
-        switch (getOperator()) {
-            case "+":
-                result = first + second;
-                break;
-            case "-":
-                result = first - second;
-                break;
-            case "x":
-                result = first * second;
-                break;
-            case "÷":
-                if (second == 0) {
-                    mString_output = "0不能作为除数!!!";
-                    return mString_output;
+    private val output: String
+        get() {
+            var result = 0L
+            Log.e("pgct(op)", "mScale:$mScale")
+            Log.e("pgct(op)", "firstOperand:$firstOperand")
+            val first: Long = firstOperand.toString().toLong(mScale)
+            val second: Long = secondOperand.toString().toLong(mScale)
+            when (operator) {
+                "+" -> result = first + second
+                "-" -> result = first - second
+                "x" -> result = first * second
+                "÷" -> if (second == 0L) {
+                    mOutputStr = "0不能作为除数!!!"
+                    mOutputStr
+                } else {
+                    result = first / second
                 }
-                else {
-                    result = first / second;
-                    break;
-                }
-            case "Mod":
-                if (second == 0) {
-                    mString_output = "0不能作为除数!!!";
-                    return mString_output;
-                }
-                else
-                    result = first % second;
-                break;
-            case "Or":
-                result = first | second;
-                break;
-            case "Xor":
-                result = first ^ second;
-                break;
-            case "And":
-                result = first & second;
-                break;
-            default:
-                result = 0;
+                "Mod" -> if (second == 0L) {
+                    mOutputStr = "0不能作为除数!!!"
+                    return mOutputStr
+                } else result = first % second
+                "Or" -> result = first or second
+                "Xor" -> result = first xor second
+                "And" -> result = first and second
+                else -> result = 0
+            }
+            mOutputStr = when (mScale) {
+                16 -> java.lang.Long.toHexString(result).uppercase()
+                10 -> result.toString()
+                8 -> java.lang.Long.toOctalString(result)
+                2 -> java.lang.Long.toBinaryString(result)
+                else -> "mScale wrong!"
+            }
+            Log.e("pgct", first.toString() + operator + second.toString())
+            Log.e("pgct", "output:$mOutputStr")
+            return mOutputStr
         }
-
-        switch (mScale) {
-            case 16:
-                mString_output = Long.toHexString(result);
-                break;
-            case 10:
-                mString_output = String.valueOf(result);
-                break;
-            case 8:
-                mString_output = Long.toOctalString(result);
-                break;
-            case 2:
-                mString_output = Long.toBinaryString(result);
-                break;
-            default:
-                mString_output = "mScale wrong!";
-        }
-
-        Log.e("pgct", String.valueOf(first) + operator + String.valueOf(second));
-        Log.e("pgct", "output:" + mString_output);
-        return mString_output;
-    }
 
     /*设置数字按钮监听*/
-    public void setButtonNumbersListener() {
-        Log.e("pgct", "NumbersListener");
-        for (int i = 0; i < mButtonOperands_id.length; i++) {
-            Button button = (Button) findViewById(mButtonOperands_id[i]);
-            button.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    if (firstOperand.length() > 16 || secondOperand.length() > 16)
-                        Util.showToast(MainActivity.this, R.string.unableInput);
-                    else {
-                        if (mEditText_input.length() >= 26)
-                            mEditText_input.setTextSize(10);
-                        else if (mEditText_input.length() > 18)
-                            mEditText_input.setTextSize(20);
-                        else if (mEditText_input.length() > 10)
-                            mEditText_input.setTextSize(30);
-                        Button button = (Button) findViewById(v.getId());
-                        if (state == 'i') {
-                            firstOperand.append(button.getText().toString());
-                            mEditText_input.setText(firstOperand);
-                            if (!firstOperand.toString().equals("")) {
-                                setButtonOperatorsListener();
-                                Log.e("pgct", "firstOperand(i):" + firstOperand);
-                            }
+    private fun setButtonNumbersListener() {
+        Log.e("pgct", "NumbersListener")
+        for (i in mButtonOperandIds.indices) {
+            val button = findViewById<View>(mButtonOperandIds[i]) as Button
+            button.setOnClickListener { v ->
+                if (firstOperand.length > 16 || secondOperand.length > 16) Util.showToast(
+                    this@MainActivity,
+                    R.string.unableInput
+                ) else {
+                    if (mBinding.editTextInput.length() >= 26) mBinding.editTextInput.textSize =
+                        10f else if (mBinding.editTextInput.length() > 18) mBinding.editTextInput.textSize =
+                        20f else if (mBinding.editTextInput.length() > 10) mBinding.editTextInput.textSize =
+                        30f
+                    val button = findViewById<Button>(v.id)
+                    if (state == 'i') {
+                        firstOperand.append(button.text.toString())
+                        mBinding.editTextInput.setText(firstOperand)
+                        if (firstOperand.toString() != "") {
+                            setButtonOperatorsListener()
+                            Log.e("pgct", "firstOperand(i):$firstOperand")
                         }
-                        else if (state == 's') {
-                            Log.e("pgct", "firstOperand(o)" + firstOperand);
-                            mEditText_input.setText(firstOperand.toString() + operator);
-                            secondOperand.append(button.getText().toString());
-                            Log.e("epg", secondOperand.toString());
-                            mEditText_input.append(secondOperand.toString());
-                            mTextView_output.setText(getOutput());
-                        }
+                    } else if (state == 's') {
+                        Log.e("pgct", "firstOperand(o)$firstOperand")
+                        mBinding.editTextInput.setText(firstOperand.toString() + operator)
+                        secondOperand.append(button.text.toString())
+                        Log.e("epg", secondOperand.toString())
+                        mBinding.editTextInput.append(secondOperand.toString())
+                        mBinding.textViewOutput.text = output
                     }
                 }
-            });
+            }
         }
     }
 
     /*设置操作符监听*/
-    public void setButtonOperatorsListener() {
-        Log.e("pgct", "OperatorsListener");
-        for (int i = 0; i < mButtonUnaryOperators_id.length; i++) {
-            Button button1 = (Button) findViewById(mButtonUnaryOperators_id[i]);
-            button1.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    if (mEditText_input.length() <= 40) {
-                        switch (v.getId()) {
-                            case R.id.button_lsh:
-                                operator = "Lsh";
-                                mEditText_input.setText("Lsh(" + mEditText_input.getText() + ")");
-                                mString_output = Long.toBinaryString(Long.parseLong(firstOperand.toString(), 2) << 1);
-                                break;
-                            case R.id.button_rsh:
-                                operator = "Rsh";
-                                if (!mString_output.equals("0")) {
-                                    mEditText_input.setText("Rsh(" + mEditText_input.getText() + ")");
-                                    mString_output = Long.toBinaryString(Long.parseLong(firstOperand.toString(), 2) >> 1);
-                                }
-                                break;
-                            case R.id.button_not:
-                                operator = "Not";
-                                mEditText_input.setText("Not(" + mEditText_input.getText() + ")");
-                                mString_output = Long.toBinaryString(~Long.parseLong(firstOperand.toString(), 2));
-                                break;
+    private fun setButtonOperatorsListener() {
+        Log.e("pgct", "OperatorsListener")
+        for (i in mButtonUnaryOperatorIds.indices) {
+            val button1 = findViewById<View>(mButtonUnaryOperatorIds[i]) as Button
+            button1.setOnClickListener { v ->
+                if (mBinding.editTextInput.length() <= 40) {
+                    when (v.id) {
+                        R.id.button_lsh -> {
+                            operator = "Lsh"
+                            mBinding.editTextInput.setText("Lsh(" + mBinding.editTextInput.text + ")")
+                            mOutputStr = java.lang.Long.toBinaryString(
+                                firstOperand.toString().toLong(2) shl 1
+                            )
                         }
-                        if (mEditText_input.length() > 16) {
-                            mEditText_input.setTextSize(30);
-                            if (mEditText_input.length() > 24) {
-                                mEditText_input.setTextSize(22);
-                                if (mEditText_input.length() > 32)
-                                    mEditText_input.setTextSize(14);
+                        R.id.button_rsh -> {
+                            operator = "Rsh"
+                            if (mOutputStr != "0") {
+                                mBinding.editTextInput.setText("Rsh(" + mBinding.editTextInput.text + ")")
+                                mOutputStr = java.lang.Long.toBinaryString(
+                                    firstOperand.toString().toLong(2) shr 1
+                                )
                             }
                         }
-                        mTextView_output.setText(mString_output);
-                        firstOperand = new StringBuffer(mString_output);
+                        R.id.button_not -> {
+                            operator = "Not"
+                            mBinding.editTextInput.setText("Not(" + mBinding.editTextInput.text + ")")
+                            mOutputStr = java.lang.Long.toBinaryString(
+                                firstOperand.toString().toLong(2).inv()
+                            )
+                        }
                     }
-                    else
-                        Util.showToast(MainActivity.this, R.string.unableInput);
-                }
-
-            });
+                    if (mBinding.editTextInput.length() > 16) {
+                        mBinding.editTextInput.textSize = 30f
+                        if (mBinding.editTextInput.length() > 24) {
+                            mBinding.editTextInput.textSize = 22f
+                            if (mBinding.editTextInput.length() > 32) mBinding.editTextInput.textSize = 14f
+                        }
+                    }
+                    mBinding.textViewOutput.text = mOutputStr
+                    firstOperand = StringBuffer(mOutputStr)
+                } else Util.showToast(this@MainActivity, R.string.unableInput)
+            }
         }
-
-        for (int i = 0; i < mButtonBinaryOperators_id.length; i++) {
-
-            Button button2 = (Button) findViewById(mButtonBinaryOperators_id[i]);
-
-            button2.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    /*operatorType = 'B';*/
-                    if (!mTextView_output.getText().toString().equals("")) {
-                        firstOperand = new StringBuffer(mTextView_output.getText().toString());
-                    }
-                    switch (v.getId()) {
-                        case R.id.button_add:
-                            operator = "+";
-                            break;
-                        case R.id.button_sub:
-                            operator = "-";
-                            break;
-                        case R.id.button_mul:
-                            operator = "x";
-                            break;
-                        case R.id.button_div:
-                            operator = "÷";
-                            break;
-                        case R.id.button_mod:
-                            operator = "Mod";
-                            break;
-                        case R.id.button_or:
-                            operator = "Or";
-                            break;
-                        case R.id.button_xor:
-                            operator = "Xor";
-                            break;
-                        case R.id.button_and:
-                            operator = "And";
-                            break;
-                    }
-                    mEditText_input.append(operator);
-
-                    state = 's';
-                    secondOperand = new StringBuffer();
-                    Log.e("pgct", "state:" + state);
+        for (i in mButtonBinaryOperatorIds.indices) {
+            val button2 = findViewById<View>(mButtonBinaryOperatorIds[i]) as Button
+            button2.setOnClickListener { v -> /*operatorType = 'B';*/
+                if (mBinding.textViewOutput.text.toString() != "") {
+                    firstOperand = StringBuffer(mBinding.textViewOutput.text.toString())
                 }
-            });
+                when (v.id) {
+                    R.id.button_add -> operator = "+"
+                    R.id.button_sub -> operator = "-"
+                    R.id.button_mul -> operator = "x"
+                    R.id.button_div -> operator = "÷"
+                    R.id.button_mod -> operator = "Mod"
+                    R.id.button_or -> operator = "Or"
+                    R.id.button_xor -> operator = "Xor"
+                    R.id.button_and -> operator = "And"
+                }
+                mBinding.editTextInput.append(operator)
+                state = 's'
+                secondOperand = StringBuffer()
+                Log.e("pgct", "state:$state")
+            }
         }
     }
-
-
 
     /*进制转换*/
-
-    public void changeToHEX() {
-    /*   所有数值按键可用，包括'A','B'……   */
-        for (int i = 0; i < mButtonOperands_id.length; i++) {
-            Button button = (Button) findViewById(mButtonOperands_id[i]);
-            button.setEnabled(true);
+    private fun changeToHEX() {
+        /*   所有数值按键可用，包括'A','B'……   */
+        for (i in mButtonOperandIds.indices) {
+            val button = findViewById<View>(mButtonOperandIds[i]) as Button
+            button.isEnabled = true
         }
 
-        /*单元操作符不可用*/
-        for (int i = 0; i < mButtonUnaryOperators_id.length - 1; i++) {
-            Button button = (Button) findViewById(mButtonUnaryOperators_id[i]);
-            button.setEnabled(false);
+        /*单元操作符不可用*/for (i in 0 until mButtonUnaryOperatorIds.size - 1) {
+            val button = findViewById<View>(mButtonUnaryOperatorIds[i]) as Button
+            button.isEnabled = false
         }
 
-        /*转换为十六进制*/
-        if (firstOperand.length() > 0) {
-            firstOperand = new StringBuffer(Long.toHexString(
-                    Long.valueOf(firstOperand.toString(), mScale)));
-            mEditText_input.setText(firstOperand.toString());
-            if (!operator.equals("")) {
-                mEditText_input.append(String.valueOf(operator));
-                if (secondOperand.length() > 0) {
-                    secondOperand = new StringBuffer(Long.toHexString(
-                            Long.valueOf(secondOperand.toString(), mScale)));
-                    mEditText_input.append(secondOperand);
+        /*转换为十六进制*/if (firstOperand.isNotEmpty()) {
+            firstOperand = StringBuffer(
+                java.lang.Long.toHexString(
+                    java.lang.Long.valueOf(firstOperand.toString(), mScale)
+                )
+            )
+            mBinding.editTextInput.setText(firstOperand.toString())
+            if (operator != "") {
+                mBinding.editTextInput.append(operator)
+                if (secondOperand.isNotEmpty()) {
+                    secondOperand = StringBuffer(
+                        java.lang.Long.toHexString(
+                            java.lang.Long.valueOf(secondOperand.toString(), mScale)
+                        )
+                    )
+                    mBinding.editTextInput.append(secondOperand)
                 }
             }
         }
-        if (!mString_output.equals("")) {
-            mString_output = Long.toHexString(Long.valueOf(mString_output, mScale));
-            mTextView_output.setText(mString_output);
+        if (mOutputStr != "") {
+            mOutputStr =
+                java.lang.Long.toHexString(java.lang.Long.valueOf(mOutputStr, mScale))
+            mBinding.textViewOutput.text = mOutputStr
         }
-
-        mScale = 16;
-        mTextView_scale = (TextView) (findViewById(R.id.textView_scale));
-        mTextView_scale.setText("H");
-
+        mScale = 16
+        mBinding.textViewScale.text = "H"
     }
 
-    public void changeToDEC() {
+    private fun changeToDEC() {
         /*A,B,C...按键不可用*/
-        for (int i = 0; i < mButtonOperands_id.length; i++) {
+        for (i in mButtonOperandIds.indices) {
             if (i < 10) {
-                Button button = (Button) findViewById(mButtonOperands_id[i]);
-                button.setEnabled(true);
-            }
-            else if (i >= 10) {
-                Button button = (Button) findViewById(mButtonOperands_id[i]);
-                button.setEnabled(false);
+                val button = findViewById<View>(mButtonOperandIds[i]) as Button
+                button.isEnabled = true
+            } else {
+                val button = findViewById<View>(mButtonOperandIds[i]) as Button
+                button.isEnabled = false
             }
         }
 
-        /*转换为十进制*/
-        for (int i = 0; i < mButtonUnaryOperators_id.length - 1; i++) {
-            Button button = (Button) findViewById(mButtonUnaryOperators_id[i]);
-            button.setEnabled(false);
+        /*转换为十进制*/for (i in 0 until mButtonUnaryOperatorIds.size - 1) {
+            val button = findViewById<View>(mButtonUnaryOperatorIds[i]) as Button
+            button.isEnabled = false
         }
-
-        if (firstOperand.length() > 0) {
-            firstOperand = new StringBuffer(Long.valueOf(
-                    firstOperand.toString(), mScale).toString());
-            mEditText_input.setText(firstOperand.toString());
-            if (!operator.equals("")) {
-                mEditText_input.append(String.valueOf(operator));
-                if (secondOperand.length() > 0) {
-                    secondOperand = new StringBuffer(Long.valueOf(
-                            secondOperand.toString(), mScale).toString());
-                    mEditText_input.append(secondOperand);
+        if (firstOperand.isNotEmpty()) {
+            firstOperand = StringBuffer(
+                java.lang.Long.valueOf(
+                    firstOperand.toString(), mScale
+                ).toString()
+            )
+            mBinding.editTextInput.setText(firstOperand.toString())
+            if (operator != "") {
+                mBinding.editTextInput.append(operator)
+                if (secondOperand.isNotEmpty()) {
+                    secondOperand = StringBuffer(
+                        java.lang.Long.valueOf(
+                            secondOperand.toString(), mScale
+                        ).toString()
+                    )
+                    mBinding.editTextInput.append(secondOperand)
                 }
             }
         }
-
-        if (!mString_output.equals("")) {
-            mString_output = String.valueOf(Long.valueOf(mString_output, mScale));
-            mTextView_output.setText(mString_output);
+        if (mOutputStr != "") {
+            mOutputStr = java.lang.Long.valueOf(mOutputStr, mScale).toString()
+            mBinding.textViewOutput.text = mOutputStr
         }
-        mScale = 10;
-        mTextView_scale = (TextView) (findViewById(R.id.textView_scale));
-        mTextView_scale.setText("D");
+        mScale = 10
+        mBinding.textViewScale.text = "D"
+
     }
 
-    public void changeToOCT() {
-
-        for (int i = 0; i < mButtonOperands_id.length; i++) {
+    private fun changeToOCT() {
+        for (i in mButtonOperandIds.indices) {
             if (i < 8) {
-                Button button = (Button) findViewById(mButtonOperands_id[i]);
-                button.setEnabled(true);
-            }
-            else if (i >= 8) {
-                Button button = (Button) findViewById(mButtonOperands_id[i]);
-                button.setEnabled(false);
+                val button = findViewById<View>(mButtonOperandIds[i]) as Button
+                button.isEnabled = true
+            } else {
+                val button = findViewById<View>(mButtonOperandIds[i]) as Button
+                button.isEnabled = false
             }
         }
 
-         /*单元操作符不可用*/
-        for (int i = 0; i < mButtonUnaryOperators_id.length - 1; i++) {
-            Button button = (Button) findViewById(mButtonUnaryOperators_id[i]);
-            button.setEnabled(false);
+        /*单元操作符不可用*/for (i in 0 until mButtonUnaryOperatorIds.size - 1) {
+            val button = findViewById<View>(mButtonUnaryOperatorIds[i]) as Button
+            button.isEnabled = false
         }
 
-        /*转换为八进制*/
-        if (firstOperand.length() > 0) {
-            firstOperand = new StringBuffer(Long.toOctalString(
-                    Long.valueOf(firstOperand.toString(), mScale)));
-            mEditText_input.setText(firstOperand.toString());
-            if (!operator.equals("")) {
-                mEditText_input.append(String.valueOf(operator));
-                if (secondOperand.length() > 0) {
-                    secondOperand = new StringBuffer(Long.toOctalString(
-                            Long.valueOf(secondOperand.toString(), mScale)));
-                    mEditText_input.append(secondOperand);
-
+        /*转换为八进制*/if (firstOperand.isNotEmpty()) {
+            firstOperand = StringBuffer(
+                java.lang.Long.toOctalString(
+                    java.lang.Long.valueOf(firstOperand.toString(), mScale)
+                )
+            )
+            mBinding.editTextInput.setText(firstOperand.toString())
+            if (operator != "") {
+                mBinding.editTextInput.append(operator)
+                if (secondOperand.isNotEmpty()) {
+                    secondOperand = StringBuffer(
+                        java.lang.Long.toOctalString(
+                            java.lang.Long.valueOf(secondOperand.toString(), mScale)
+                        )
+                    )
+                    mBinding.editTextInput.append(secondOperand)
                 }
             }
         }
-
-        if (!mString_output.equals("")) {
-            mString_output = Long.toOctalString(Long.valueOf(mString_output, mScale));
-            mTextView_output.setText(mString_output);
+        if (mOutputStr != "") {
+            mOutputStr =
+                java.lang.Long.toOctalString(java.lang.Long.valueOf(mOutputStr, mScale))
+            mBinding.textViewOutput.text = mOutputStr
         }
-        mScale = 8;
-        mTextView_scale = (TextView) (findViewById(R.id.textView_scale));
-        mTextView_scale.setText("O");
+        mScale = 8
+        mBinding.textViewScale.text = "O"
     }
-    
-    public void changeToBIN(){
-        for (int i = 2; i < mButtonOperands_id.length; i++) {
-            Button button = (Button) findViewById(mButtonOperands_id[i]);
-            button.setEnabled(false);
+
+    private fun changeToBIN() {
+        for (i in 2 until mButtonOperandIds.size) {
+            val button = findViewById<View>(mButtonOperandIds[i]) as Button
+            button.isEnabled = false
         }
 
-        /*单元操作符可用*/
-        for (int i = 0; i < mButtonUnaryOperators_id.length ; i++) {
-            Button button = (Button) findViewById(mButtonUnaryOperators_id[i]);
-            button.setEnabled(true);
+        /*单元操作符可用*/for (i in mButtonUnaryOperatorIds.indices) {
+            val button = findViewById<View>(mButtonUnaryOperatorIds[i]) as Button
+            button.isEnabled = true
         }
 
-        /*转换为二进制*/
-        Log.e("pgct(B)", "firstOperand:" + firstOperand);
-        Log.e("pgct", "mScale:" + mScale);
-        if (firstOperand.length() > 0) {
-            firstOperand = new StringBuffer(Long.toBinaryString(Long.valueOf(
-                    firstOperand.toString(), mScale)));
-            mEditText_input.setText(firstOperand.toString());
-            if (!operator.equals("")) {
-                mEditText_input.append(String.valueOf(operator));
-                if (secondOperand.length() > 0) {
-                    secondOperand = new StringBuffer(Long.toBinaryString(
-                            Long.valueOf(secondOperand.toString(), mScale)));
-                    mEditText_input.append(secondOperand);
+        /*转换为二进制*/Log.e("pgct(B)", "firstOperand:$firstOperand")
+        Log.e("pgct", "mScale:$mScale")
+        if (firstOperand.isNotEmpty()) {
+            firstOperand = StringBuffer(
+                java.lang.Long.toBinaryString(
+                    java.lang.Long.valueOf(
+                        firstOperand.toString(), mScale
+                    )
+                )
+            )
+            mBinding.editTextInput.setText(firstOperand.toString())
+            if (operator != "") {
+                mBinding.editTextInput.append(operator)
+                if (secondOperand.isNotEmpty()) {
+                    secondOperand = StringBuffer(
+                        java.lang.Long.toBinaryString(
+                            java.lang.Long.valueOf(secondOperand.toString(), mScale)
+                        )
+                    )
+                    mBinding.editTextInput.append(secondOperand)
                 }
             }
         }
-
-        if (!mString_output.equals("")) {
-            mString_output = Long.toBinaryString(Long.valueOf(mString_output, mScale));
-            mTextView_output.setText(mString_output);
+        if (mOutputStr != "") {
+            mOutputStr =
+                java.lang.Long.toBinaryString(java.lang.Long.valueOf(mOutputStr, mScale))
+            mBinding.textViewOutput.text = mOutputStr
         }
-
-        mScale = 2;
-        mTextView_scale = (TextView) (findViewById(R.id.textView_scale));
-        mTextView_scale.setText("B");
+        mScale = 2
+        mBinding.textViewScale.text = "B"
     }
-
 }

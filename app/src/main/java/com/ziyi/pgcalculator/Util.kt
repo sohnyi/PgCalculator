@@ -1,31 +1,28 @@
-package com.ziyi.pgcalculator;
+package com.ziyi.pgcalculator
 
-import android.content.Context;
-import android.widget.Toast;
+import android.content.Context
+import android.widget.Toast
 
 /**
  * Created by Ziyi on 2016/7/28.
  */
-public class Util {
-    private static Toast mToast;
-
-    public static void showToast(Context context, String s) {
+object Util {
+    private var mToast: Toast? = null
+    fun showToast(context: Context?, s: String?) {
         if (mToast == null) {
-            mToast = Toast.makeText(context, s, Toast.LENGTH_SHORT);
+            mToast = Toast.makeText(context, s, Toast.LENGTH_SHORT)
         } else {
-            mToast.setText(s);
+            mToast!!.setText(s)
         }
-
-        mToast.show();
+        mToast!!.show()
     }
 
-    public static void showToast(Context context, int id) {
+    fun showToast(context: Context?, id: Int) {
         if (mToast == null) {
-            mToast = Toast.makeText(context, id, Toast.LENGTH_SHORT);
+            mToast = Toast.makeText(context, id, Toast.LENGTH_SHORT)
         } else {
-            mToast.setText(id);
+            mToast!!.setText(id)
         }
-
-        mToast.show();
+        mToast!!.show()
     }
 }
